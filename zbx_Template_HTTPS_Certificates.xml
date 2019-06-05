@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.0</version>
+    <date>2019-06-05T12:53:54Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template HTTPS Certificates</template>
+            <name>Template HTTPS Certificates</name>
+            <description>Проверяет срок действия ssl сертификатов.</description>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>https</name>
+                </application>
+            </applications>
+            <items/>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Get data</name>
+                    <type>13</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>ssh.run[get_cert_expiration_data]</key>
+                    <delay>1d</delay>
+                    <status>0</status>
+                    <allowed_hosts/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params>#-------------------------{ add\remove URLs to check here }---------------------------------&#13;
+urls=(&#13;
+    yandex.ru&#13;
+    google.com&#13;
+)&#13;
+&#13;
+#-----------------------------{ don't edit text below this line }-----------------------------------&#13;
+data=$(for url in ${urls[@]}; {&#13;
+&#13;
+    raw=$(curl -vvI https://$url 2&gt;&amp;1 | grep 'expire date:')&#13;
+    [[ $raw ]] || continue&#13;
+    exp_date_parser=(${raw//\*/})&#13;
+&#13;
+    exp_date=${exp_date_parser[@]:2}&#13;
+    curent_date_in_sec=$(date '+%s')&#13;
+    future_date_in_sec=$(date -d &quot;$exp_date&quot; '+%s')&#13;
+    expire_in_sec=$(($future_date_in_sec-$curent_date_in_sec))&#13;
+    expire_in_day=$(($expire_in_sec/60/60/24))&#13;
+&#13;
+    printf &quot;\n\t{ \&quot;{#URL}\&quot;:\&quot;$url\&quot;,\t\&quot;{#EXPIRE}\&quot;:\&quot;$expire_in_day\&quot; },&quot;&#13;
+};  printf '_LAST_COMMA_'&#13;
+);  printf &quot;{\n\t\&quot;data\&quot;:[\n${data//,_LAST_COMMA_/\\n}\n\t]\n}\n&quot;</params>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username>zabbix</username>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <filter>
+                        <evaltype>0</evaltype>
+                        <formula/>
+                        <conditions/>
+                    </filter>
+                    <lifetime>30d</lifetime>
+                    <description/>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>{#URL}</name>
+                            <type>15</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>expire[{#URL}]</key>
+                            <delay>1d</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>0</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params>{#EXPIRE}</params>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>https</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item/>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template HTTPS Certificates:expire[{#URL}].last(0)}&#13;
+&lt;=&#13;
+{$DAYS_TO_EXPIRE}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>SSL cert on {#URL} close to expire</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>2</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies/>
+                            <tags/>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes/>
+                    <host_prototypes/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                </discovery_rule>
+            </discovery_rules>
+            <httptests/>
+            <macros/>
+            <templates/>
+            <screens/>
+        </template>
+    </templates>
+</zabbix_export>
