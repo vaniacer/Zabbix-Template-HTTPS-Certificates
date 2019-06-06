@@ -25,7 +25,7 @@
             <items/>
             <discovery_rules>
                 <discovery_rule>
-                    <name>Get data</name>
+                    <name>Get ssl cert expiration data</name>
                     <type>13</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -74,7 +74,7 @@ data=$(for url in ${urls[@]}; {&#13;
                         <formula/>
                         <conditions/>
                     </filter>
-                    <lifetime>30d</lifetime>
+                    <lifetime>1d</lifetime>
                     <description/>
                     <item_prototypes>
                         <item_prototype>
