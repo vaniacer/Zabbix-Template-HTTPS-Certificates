@@ -11,7 +11,7 @@
         <template>
             <template>Template HTTPS Certificates</template>
             <name>Template HTTPS Certificates</name>
-            <description>Проверяет срок действия ssl сертификатов.</description>
+            <description>Check ssl cert expiration date by urls.</description>
             <groups>
                 <group>
                     <name>Templates</name>
