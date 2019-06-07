@@ -55,7 +55,7 @@ data=$(for url in ${urls[@]}; {&#13;
 &#13;
     exp_date=${exp_date_parser[@]:2}&#13;
     curent_date_in_sec=$(date '+%s')&#13;
-    future_date_in_sec=$(date -d &quot;$exp_date&quot; '+%s')&#13;
+    future_date_in_sec=$(date '+%s' -d &quot;$exp_date&quot;)&#13;
     expire_in_sec=$(($future_date_in_sec-$curent_date_in_sec))&#13;
     expire_in_day=$(($expire_in_sec/60/60/24))&#13;
 &#13;
