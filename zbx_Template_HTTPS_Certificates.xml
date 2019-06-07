@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-06-05T12:53:54Z</date>
+    <date>2019-06-07T05:37:16Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -78,14 +78,14 @@ data=$(for url in ${urls[@]}; {&#13;
                     <description/>
                     <item_prototypes>
                         <item_prototype>
-                            <name>{#URL}</name>
+                            <name>SSL cert of {#URL} expire in days</name>
                             <type>15</type>
                             <snmp_community/>
                             <snmp_oid/>
                             <key>expire[{#URL}]</key>
-                            <delay>1d</delay>
-                            <history>90d</history>
-                            <trends>365d</trends>
+                            <delay>1h</delay>
+                            <history>10d</history>
+                            <trends>30d</trends>
                             <status>0</status>
                             <value_type>0</value_type>
                             <allowed_hosts/>
@@ -142,7 +142,7 @@ data=$(for url in ${urls[@]}; {&#13;
                         <trigger_prototype>
                             <expression>{Template HTTPS Certificates:expire[{#URL}].last(0)}&#13;
 &lt;=&#13;
-{$DAYS_TO_EXPIRE}</expression>
+{$SSL_DAYS_TO_EXPIRE}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>SSL cert on {#URL} close to expire</name>
@@ -181,7 +181,12 @@ data=$(for url in ${urls[@]}; {&#13;
                 </discovery_rule>
             </discovery_rules>
             <httptests/>
-            <macros/>
+            <macros>
+                <macro>
+                    <macro>{$SSL_DAYS_TO_EXPIRE}</macro>
+                    <value>21</value>
+                </macro>
+            </macros>
             <templates/>
             <screens/>
         </template>
