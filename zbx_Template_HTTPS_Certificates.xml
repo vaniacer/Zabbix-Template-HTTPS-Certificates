@@ -54,6 +54,7 @@ data=$(for url in ${urls[@]}; {&#13;
         | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' \&#13;
         | openssl x509 -noout -text 2&gt;/dev/null | grep 'Not After'&#13;
     )&#13;
+    exp_date_parser=($raw)
     exp_date=${exp_date_parser[@]:3}&#13;
     curent_date_in_sec=$(date '+%s')&#13;
     future_date_in_sec=$(date '+%s' -d &quot;$exp_date&quot;)&#13;
